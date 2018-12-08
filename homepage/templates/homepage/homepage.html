@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block head %}
+    <title>Home</title>
+{% endblock %}
+
+{% block body %}
+
+    <div class="jumbotron-fluid">
+        <h1>Home</h1>
+        <h2>Welcome {{ myName }}, this is the homepage of Chatmates</h2>
+    </div>
+    <div>
+        <div class="row">
+            <div class="card card col-xs-12 col-md-6 homepage-card">
+                <h3 class="card-title">Discussions</h3>
+                <ul class="list-group card-body">
+                    {% if discussions %}
+                        {% for discus in discussions %}
+                            <li class="list-group">
+                                <a href="{% url 'discussion:discussionPage' discus.discussion.discussionNumber %}" class="list-group-item list-group-item-dark list-group-item-action d-flex align-items-center justify-content-between">
+                                    <h6>Discussion number {{ discus.discussion.discussionNumber }}</h6>
+                                </a>
+                            </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="list-group-item list-group-item-dark">You have not yet joined any discussions</li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <div class="card col-xs-12 col-md-6 homepage-card">
+                <h3 class="card-title">Adding stuff</h3>
+                <div class="card-body">
+                    <h4>Add a friend</h4>
+                    <form method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        {% if text %}
+                            <p class="warning">{{ text }}</p>
+                        {% endif %}
+                        <button type="submit" name="addFriend" class="btn btn-success">Add</button>
+                    </form>
+                    <br>
+                    <!-- TÄHÄN add discussion -->
+                    <h4>Add a discussion</h4>
+                    <form class="form-group">
+                        {% csrf_token %}
+                        ID: <input type="text" id="discussionID" class="form-control"><br>
+                        <label id="Disinfo"></label><br>
+                        <input type="button" id="addDiscussion" class="btn btn-success" value="Add">
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="card col-xs-12 col-md-6 homepage-card">
+                <h3 class="card-title">Friends</h3>
+                <div class="card-body">
+                {% if friends %}
+                    <button id="showrmbtn" class="btn btn-outline-warning mb-2">Remove friends</button>
+                {% endif %}
+                    <ul class="list-group">
+                        {% if friends %}
+                            {% for dude in friends %}
+                                <li class="list-group">
+                                    <div id="rmdiv{{ dude.username }}">
+                                            <a href="{% url 'accounts:show_profile' dude.username %}" class="list-group-item list-group-item-dark list-group-item-action d-flex align-items-center justify-content-between">
+                                                <h6>{{ dude.first_name }} {{ dude.last_name }}</h6>
+                                                <p class="text-muted">{{ dude.username }}</p>
+                                            </a>
+                                            <button class="rmFriend btn btn-outline-danger btn-sm mt-2 mb-3"  data-name="{{ dude.username }}" >Remove</button>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <p>You have no friends, but maybe you should add one?</p>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card col-xs-12 col-md-6 homepage-card">
+                <h3 class="card-title">Friend requests</h3>
+                <div class="card-body">
+                    <ul class="list-group">
+                        {% if requestReceived or requestSend %}
+                            <li class="list-group">
+                                <h5>Received</h5>
+                            </li>
+                            {% for requestR in requestReceived %}
+                                <li  class="list-group">
+                                    <div id="friendRequest{{ requestR.sender.username }}">
+                                        <a href="{% url 'accounts:show_profile' requestR.sender.username %}" class="list-group-item list-group-item-dark list-group-item-action d-flex align-items-center justify-content-between">
+                                            <small class="text-muted">{{ requestR.time }}</small>
+                                            <h6>{{ requestR.sender.first_name }} {{ requestR.sender.last_name }}</h6>
+                                            <p class="text-muted">{{ requestR.sender.username }}</p>
+                                        </a>
+                                        <button class="acceptbtn btn btn-outline-success btn-sm mt-2 mb-3" data-name="{{ requestR.sender.username }}">Accept</button>
+                                        <button class="declinebtn btn btn-outline-danger btn-sm mt-2 mb-3" data-name="{{ requestR.sender.username }}">Decline</button>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                            <li class="list-group">
+                                <h5>Sent</h5>
+                            </li>
+                            {% for requestS in requestSend %}
+                                <li  class="list-group">
+                                    <div id="cancelRequest{{ requestS.receiver.username }}">
+                                        <a href="{% url 'accounts:show_profile' requestS.receiver.username %}" class=" list-group-item list-group-item-dark list-group-item-action d-flex align-items-center justify-content-between">
+                                            <small class="text-muted">{{ requestS.time }}</small>
+                                            <h6>{{ requestS.receiver.first_name }} {{ requestS.receiver.last_name }}</h6>
+                                            <p class="text-muted">{{ requestS.receiver.username }}</p>
+                                        </a>
+                                        <button class="cancelbtn btn btn-outline-danger btn-sm mt-2 mb-3" data-name="{{ requestS.receiver.username }}">Cancel</button>
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <li class="list-group-item list-group-item-dark">No pending requests</li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src={% static 'homepage/js/scripts.js' %}></script>
+
+
+{% endblock %}
+
+

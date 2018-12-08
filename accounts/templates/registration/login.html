@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Login</title>
+{% endblock %}
+
+{% block body %}
+    <br>
+    <div class="container-fluid">
+        <h1>Welcome</h1>
+        <p>
+        You can login here!
+        </p>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+        <button type="submit">Login</button>
+        </form>
+    </div>
+    <div class="container-fluid">
+        <br>
+        <p> Forgot your password?</p>
+        <a href='../reset-password/'>Click here to reset it</a>
+
+    </div>
+
+{% endblock %}

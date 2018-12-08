@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+<h1>Home</h1>
+{% block head %}
+    <title>Profile</title>
+{% endblock %}
+
+{% block body %}
+    <div class="container-fluid">
+       <form method="POST">
+           {% csrf_token %}
+            {{ form.as_p }}
+           <button type="submit" class="btn btn-success m-1">Submit</button>
+       </form>
+   </div>
+    <div class="container-fluid">
+        <a class="btn btn-primary m-1" href="/account/change-password" role="button">Change password</a>
+    </div>
+{% endblock %}

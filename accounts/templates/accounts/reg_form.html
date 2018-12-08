@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block head %}
+    <title>Register</title>
+{% endblock %}
+
+
+{% block body %}
+    <div class="container-fluid">
+    <h1>Register</h1>
+        <p>The fields after the password are optional and can be changed later</p>
+    <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Register</button>
+    </form>
+    </div>
+{% endblock %}

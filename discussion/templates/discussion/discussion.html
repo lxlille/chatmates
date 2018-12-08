@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+
+<h1>Discussion</h1>
+
+{% block body %}
+    <h3 id="welcome">Welcome to chat {{ userName }}</h3>
+
+    <!-- Form for users to write and send their messages to discussions -->
+    <form name="message" id = "messageForm" method="POST"> {% csrf_token %}
+        <input name="usersMessage" type="text" id="userMessage"/>
+        <input class="btn btn-success btn-sm" name="submit" type="submit" id="submit"/>
+    </form>
+
+    <!-- Creates the area for discussion messages to show in website -->
+    <div id="chatArea"><p>{{ chatData }}</p></div>
+
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+
+    <!-- This script is here because delete button is created using html button element -->
+    <script>
+
+        // Function sends information to backend which comments to be deleted
+        function removeMessage(key) {
+
+                var location = window.location.pathname
+                var parts = location.split("/")
+                var discussionNumber = parts[parts.length-2]
+
+                $.ajax({
+                    url: '/discussion/ajax/discussionDataMessageRemove/'+discussionNumber+'/',
+                    data: {
+                        messageData: key
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                    }
+                })
+        }
+
+        // Calls getDiscussionData every 1 seconds so chat looks almost real time
+        setInterval(getDiscussionData, 1000)
+
+        // Get discussion data from backend and shows it in website.
+        function getDiscussionData() {
+
+            var location = window.location.pathname
+            var parts = location.split("/")
+            var discussionNumber = parts[parts.length-2]
+
+            $.ajax({
+                type: 'GET',
+                url: '/discussion/ajax/discussionData/' + discussionNumber + '/',
+                dataType: 'json',
+
+                success: function (data) {
+                    $('#chatArea').empty()
+
+                    $.each(data, function (key, value) {
+                        console.log(key);
+
+                        // Adds users comments + delete button in #chatArea div so that chat comes to visible on website
+                        $('#chatArea').append(key + ' ' + value + ' ' + '<button id="' + key + '" class="btn btn-danger btn-sm" onclick="removeMessage(\'' + key + '\')" name="removeComment">Delete</button></br>')
+
+                    })
+                }
+            })
+        }
+
+        // Saves users message to database
+        $(document).on('submit', '#messageForm', function(e){
+            e.preventDefault()
+            var location = window.location.pathname
+            $.ajax({
+                type: 'POST',
+                url: location,
+                data: {
+                    messageData: $('#userMessage').val(),
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function() {
+                    $('#userMessage').empty()
+                }
+            })
+        })
+
+    </script>
+
+{% endblock %}
