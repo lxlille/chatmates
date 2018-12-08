@@ -1,13 +1,13 @@
-**Documentation of the code**
+# Documentation of the code
+This is a school project for a webdev cource at Tampere University of Technology. We did this project in a group of three and the work was distributed equally.
 
 ## Project group information
 * Persons:
+  * Mimmi Matalamäki
   * Oskari Lager
   * Ville Saukko
-  * Mimmi Matalamäki
 
 ## Pages and navigation
-- The pages consists of :
 - Login, logout and register pages which are user can sing in, out or register to the service
 - After the login the user gets redirected to the the home page. In the home page is displayed various information about the discussions, events and requests that the user might have. 
 - User has also a profile page, where can been seen all the information about him. From that page the user can go and to edit-info site, where the data of the user can be changed. In the change data page there is also a link to the page where user can change the password.
